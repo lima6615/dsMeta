@@ -1,8 +1,12 @@
+import NotificationButton from "./components/NotificationButton"
 
 function App() {
 
   return (
-    <p>Teste!!</p>
+    <>
+      <p>Teste!!</p>
+      <NotificationButton />
+    </>
   )
 };
 
