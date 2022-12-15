@@ -7,11 +7,11 @@ import com.devsuperior.dsmeta.entities.Sale;
 public class SaleDTO {
 
 	private Long id;
-	private LocalDate date;
 	private String sellerName;
 	private Integer visited;
 	private Integer deals;
 	private Double amount;
+	private LocalDate date;
 	
 	public SaleDTO() {
 	}

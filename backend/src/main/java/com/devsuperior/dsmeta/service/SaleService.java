@@ -1,9 +1,14 @@
 package com.devsuperior.dsmeta.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.function.Function;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +21,25 @@ public class SaleService {
 
 	@Autowired
 	private SaleRepository repository;
+	
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Transactional(readOnly = true)
-	public List<SaleDTO >findAll() {
-		List<Sale> entity = repository.findAll();
-		List<SaleDTO> dto = entity.stream().map(x -> new SaleDTO(x)).collect(Collectors.toList());
-		return dto;
+	public Page<SaleDTO> findSales(String minDate, String maxDate, Pageable pageable) {
+		
+		LocalDate today = LocalDate.ofInstant(Instant.now(), ZoneId.systemDefault());
+		
+		LocalDate min = minDate.equals("")? today.minusDays(365) : LocalDate.parse(minDate);
+		LocalDate max = maxDate.equals("")? today : LocalDate.parse(maxDate);
+		
+		Page<Sale> entity = repository.findSales(min, max, pageable);
+			
+		return entity.map(new Function<Sale, SaleDTO>() {
+			@Override
+			public SaleDTO apply(Sale sale) {
+				return modelMapper.map(sale, SaleDTO.class);
+			}
+		});		
 	}
-
 }
